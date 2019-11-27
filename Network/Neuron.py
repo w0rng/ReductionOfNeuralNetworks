@@ -1,11 +1,10 @@
-from random import uniform
+from random import uniform as rand
 
 
 class Neuron:
-    def __init__(self, weight: float = None, inp: list = [], out: list = []):
-        self.weight = weight if weight else uniform(-0.5, 0.5) 
+    def __init__(self, weight: list = [], inp: list = []):
+        self.weight = weight
         self.inp = inp
-        self.out = out
 
-    def __str__(self):
-        return str(self.weight)
+    def genWeight(self, cout: int):
+        self.weight = [rand(-0.5, 0.5) for _ in range(cout)]
