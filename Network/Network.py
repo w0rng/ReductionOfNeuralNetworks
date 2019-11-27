@@ -1,52 +1,32 @@
 from .Neuron import Neuron
 import json
 from types import FunctionType
+from .Saver import State
 
 
 class Network():
-    def __init__(self, coutNeurons: list, activationFunc: FunctionType):
+    def __init__(self, cout_neurons: list, activation: FunctionType) -> None:
+        self._activation = activation
 
-        self.activation = activationFunc
+        if len(cout_neurons) >= 2:
+            self._create_matrix(cout_neurons)
 
-        if len(coutNeurons) >= 2:
-            self.createMatrix(coutNeurons)
-            self.linkBuild()
-
-            # добавляем связи
-            for i, layer in enumerate(self.matrix):
-                for neuron in layer:
-                    if i != len(self.matrix)-1:
-                        neuron.out = self.matrix[i + 1]
-                        neuron.genWeight(coutNeurons[i+1])
-
-    def createMatrix(self, coutNeurons: list):
+    def _create_matrix(self, cout_neurons: list) -> None:
         self.matrix = []
-        for i in coutNeurons:
-            self.matrix.append([Neuron() for _ in range(i)])
+        for cout in cout_neurons:
+            self.matrix.append([Neuron() for _ in range(cout)])
+        self._gen_weights(cout_neurons)
 
-    def linkBuild(self):
+    def _gen_weights(self, cout_neurons: list) -> None:
         for i, layer in enumerate(self.matrix):
             for neuron in layer:
                 if i != len(self.matrix)-1:
-                    neuron.out = self.matrix[i + 1]
+                    neuron.gen_weight(cout_neurons[i + 1])
+                else:
+                    neuron.weight = [1]
 
-    def save(self, fileName: str):
-        with open(fileName, "w") as file:
-            data = {}
-            for i, layer in enumerate(self.matrix):
-                data[i] = {}
-                for j, neuron in enumerate(layer):
-                    data[i][j] = neuron.weight
-            json.dump(data, file)
+    def _save(self) -> State:
+        return State(self.matrix)
 
-    def load(self, fileName: str):
-        coutNeurons = []
-        with open(fileName, "r") as file:
-            data = json.loads(file.read())
-            """ self.createMatrix(coutNeurons)
-            self.linkBuild() """
-            for layer in data:
-                coutNeurons.append(len(data[layer]))
-                print(coutNeurons)
-                newLayer = [data[layer][neuron] for neuron in data[layer]]
-                self.matrix.append(newLayer)
+    def _restore(self, state: State) -> None:
+        self.matrix = state.get_weights()
