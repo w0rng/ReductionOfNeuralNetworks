@@ -1,7 +1,7 @@
 from Network import Network
 
 
-class State():
+class State:
     def __init__(self, weights: list) -> None:
         self._weights = weights
 
@@ -9,13 +9,13 @@ class State():
         return self._weights
 
 
-class Saver():
+class Saver:
     def __init__(self, network: Network) -> None:
         self._states = []
         self._network = network
 
     def backup(self) -> None:
-        self._states.append(self.network.save())
+        self._states.append(self._network.save())
 
     def undo(self) -> None:
         if not len(self._states):

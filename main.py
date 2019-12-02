@@ -1,10 +1,10 @@
-from Network.Network import Network
 from math import exp as e
+
+from Network.Network import Network
 from Network.Saver import Saver
 
 
 def main():
-
     network = Network([3, 2, 1], activation, dx)
     saver = Saver(network)
     print(network.predict([1, 1, 0]))
